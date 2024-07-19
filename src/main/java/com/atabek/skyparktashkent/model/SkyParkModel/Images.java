@@ -1,4 +1,4 @@
-package com.atabek.skyparktashkent.model;
+package com.atabek.skyparktashkent.model.SkyParkModel;
 
 
 import lombok.AllArgsConstructor;

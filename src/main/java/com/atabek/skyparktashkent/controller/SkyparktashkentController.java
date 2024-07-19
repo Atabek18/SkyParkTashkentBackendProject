@@ -1,5 +1,9 @@
 package com.atabek.skyparktashkent.controller;
-import com.atabek.skyparktashkent.model.*;
+
+import com.atabek.skyparktashkent.Dto.skyParkTashkentDto;
+import com.atabek.skyparktashkent.model.SkyParkModel.Images;
+import com.atabek.skyparktashkent.model.SkyParkModel.PrincipleContent;
+import com.atabek.skyparktashkent.model.SkyParkModel.Skyparktashkent;
 import com.atabek.skyparktashkent.service.SkyparktashkentService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +22,12 @@ public class SkyparktashkentController {
     @Autowired
     private SkyparktashkentService skyparktashkentService;
 
+
     @PostMapping
     public ResponseEntity<?> createSkyparktashkent(
             @RequestBody Skyparktashkent payload
     ) throws IOException {
-
-        List<PrincipleContent> principalContentList = payload.getPrincipleContentList();
-
-        for (int i = 0;i < principalContentList.size();i++){
-            skyparktashkentService.uploadImage(payload, i);
-        }
-
-        Skyparktashkent createdSkyparktashkent = skyparktashkentService.saveSkyparktashkent(payload);
-        return ResponseEntity.status(HttpStatus.CREATED).
-                body(createdSkyparktashkent.getAboutUs());
+        return ResponseEntity.status(HttpStatus.CREATED).body(skyparktashkentService.saveSkyparktashkent(payload));
 
     }
 
@@ -53,7 +49,7 @@ public class SkyparktashkentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getSkyparktashkent(@PathVariable ObjectId id){
+    public ResponseEntity<?> getSkyparktashkent(@PathVariable ObjectId id) {
 
         return ResponseEntity.status(HttpStatus.OK).
                 body(skyparktashkentService.getSkyparktashkentById(id));
@@ -61,18 +57,36 @@ public class SkyparktashkentController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> getAllSkyparktashkent(){
+    public ResponseEntity<?> getAllSkyparktashkent() {
 
         return ResponseEntity.status(HttpStatus.OK).
                 body(skyparktashkentService.findAllSkyparktashkent());
 
     }
 
-//    @PutMapping("/update/{id}")
-//    public ResponseEntity<?> updateAll(@PathVariable ObjectId id, @RequestBody Skyparktashkent payload) throws IOException {
-//        Skyparktashkent skyparktashkent = skyparktashkentService.updateSkyPark(id, payload);
-//        return ResponseEntity.status(HttpStatus.OK).body(skyparktashkent);
-//    }
+    @GetMapping("/deleteAll")
+    public ResponseEntity<?> deleteAllSkyParkTashkent(){
+        skyparktashkentService.deleteAll();
+        return ResponseEntity.ok().body("Data cleaned!!!");
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateAll(@PathVariable ObjectId id, @RequestBody skyParkTashkentDto payload) throws IOException {
+        Skyparktashkent skyparktashkent = skyparktashkentService.updateSkyPark(id, payload);
+        return ResponseEntity.status(HttpStatus.OK).body(skyparktashkent);
+    }
+
+    @PostMapping("/principal")
+    public ResponseEntity<?> createPrincipal(@RequestBody PrincipleContent payload) throws IOException {
+        PrincipleContent principleContent = skyparktashkentService.createPrincipleContent(payload);
+        return ResponseEntity.ok().body(principleContent);
+    }
+
+    @PutMapping("/principal/update/{id}")
+    public ResponseEntity<?> updatePrincipal(@PathVariable ObjectId id, @RequestBody PrincipleContent payload) throws IOException {
+        PrincipleContent updatedPrincipleContent = skyparktashkentService.updatePrincipleContent(id, payload);
+        return ResponseEntity.ok().body(updatedPrincipleContent);
+    }
 
 
 }
