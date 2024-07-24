@@ -49,7 +49,7 @@ public class SkyparktashkentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getSkyParkTashkent(@PathVariable ObjectId id) {
+    public ResponseEntity<Skyparktashkent> getSkyParkTashkent(@PathVariable ObjectId id) {
 
         return ResponseEntity.status(HttpStatus.OK).
                 body(skyparktashkentService.getSkyParkTashkentById(id));

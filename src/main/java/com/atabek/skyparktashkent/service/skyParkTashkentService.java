@@ -33,8 +33,8 @@ public class skyParkTashkentService {
     }
 
 
-    public Optional<Skyparktashkent> getSkyParkTashkentById(ObjectId id) {
-        return skyparktashkentRepository.findById(id);
+    public Skyparktashkent getSkyParkTashkentById(ObjectId id) {
+        return skyparktashkentRepository.findById(id).orElseThrow(() -> new RuntimeException("given id does not exits!"));
     }
 
 

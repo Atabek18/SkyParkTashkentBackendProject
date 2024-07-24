@@ -13,10 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -32,7 +30,6 @@ public class PrincipalService {
     private final String FOLDER_PATH = "D:/Victus/Projects/Newproject/Newproject/skyparktashkent/src/main/resources/images/";
 
 
-
     public PrincipleContent createPrincipleContent(PrincipleContent payload) throws IOException {
         Images image = uploadImage(payload);
         payload.setImageStorage(image);
@@ -40,19 +37,18 @@ public class PrincipalService {
     }
 
     public PrincipleContent updatePrincipleContent(ObjectId id, PrincipleContent payload) throws IOException {
-        Optional<PrincipleContent> principleContentOptional = principleRepository.findById(id);
-        if (principleContentOptional.isPresent()){
-            PrincipleContent principleContent = principleContentOptional.get();
-            principleContent.setTitle(payload.getTitle()!=null ? payload.getTitle() : principleContent.getTitle());
-            principleContent.setDescription(payload.getDescription()!=null ? payload.getDescription() : principleContent.getDescription());
-            if (payload.getImageStorage() != null){
-                Images images = mapImages(payload.getImageFile()==null ? principleContent.getImageFile() : payload.getImageFile(), payload.getImageStorage());
-                if (images!=null) principleContent.setImageStorage(images);
-            }
-            principleContent.setImageFile(payload.getImageFile()!=null ? payload.getImageFile() : principleContent.getImageFile());
-            return principleContent;
+        PrincipleContent principleContent = principleRepository.findById(id).orElseThrow(() -> new RuntimeException("No found"));
+//        if (principleContentOptional.isPresent()){
+//        }
+//        PrincipleContent principleContent = principleContentOptional.get();
+        principleContent.setTitle(payload.getTitle()!=null ? payload.getTitle() : principleContent.getTitle());
+        principleContent.setDescription(payload.getDescription()!=null ? payload.getDescription() : principleContent.getDescription());
+        if (payload.getImageStorage() != null){
+            Images images = mapImages(payload.getImageFile()==null ? principleContent.getImageFile() : payload.getImageFile(), payload.getImageStorage());
+            if (images!=null) principleContent.setImageStorage(images);
         }
-        return null;
+        principleContent.setImageFile(payload.getImageFile()!=null ? payload.getImageFile() : principleContent.getImageFile());
+        return principleContent;
     }
 
     public Images mapImages(String imageFileName, Images payload) throws IOException {
